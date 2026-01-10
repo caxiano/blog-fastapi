@@ -1,7 +1,7 @@
 [project]
-name = "dio-blog"
-version = "0.1.0"
-description = ""
+name = "blog-fastapi"
+version = "1.0"
+description = "Project template for FastAPI applications"
 authors = [
     {name = "Cassiano Shigueyuki Nishikawa",email = "csnishikawa@gmail.com"}
 ]
