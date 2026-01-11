@@ -4,7 +4,11 @@ import sqlalchemy as sa
 from src.config import settings
 
 
-database = databases.Database(settings.database_url)
+database_args = {}
+if settings.environment == "production" and settings.database_url.startswith("postgresql"):
+    database_args["ssl"] = True
+
+database = databases.Database(settings.database_url, **database_args)
 metadata = sa.MetaData()
 
 if settings.environment == "production":
