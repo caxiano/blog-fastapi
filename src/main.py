@@ -1,18 +1,10 @@
 from fastapi import FastAPI, Request
 from src.exceptions import NotFoundPostError
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 
 from fastapi.responses import JSONResponse
 from src.controllers import auth, post
-from src.database import database
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    await database.connect()
-    yield
-    await database.disconnect()
 
 tags_metadata = [
     {
@@ -43,7 +35,7 @@ servers = [
 
 app = FastAPI(
     title="DIO blog API",
-    version="1.2.0",
+    version="2.0",
     summary="API for personal blog.",
     description="""
 DIO blog API helps you create your personal blog. 🚀
@@ -63,7 +55,6 @@ You will be able to:
     servers=servers,
     redoc_url=None,
     # openapi_url=None, # disable docs
-    lifespan=lifespan,
 )
 
 app.add_middleware(
