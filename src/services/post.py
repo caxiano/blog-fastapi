@@ -1,12 +1,15 @@
 from databases.interfaces import Record
-from exceptions import NotFoundPostError
+from src.exceptions import NotFoundPostError
 from src.database import database
 from src.models.post import posts
 from src.schemas.post import PostIn, PostUpdateIn
 
 class PostService:
     async def read_all(self, published: bool, limit: int, skip: int = 0) -> list[Record]:
-        query = posts.select().where(posts.c.published == published).limit(limit).offset(skip)
+        if published:
+            query = posts.select().limit(limit).offset(skip)
+        else:
+            query = posts.select().where(posts.c.published == published).limit(limit).offset(skip)
         return await database.fetch_all(query)
     
 
