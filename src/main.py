@@ -34,10 +34,10 @@ servers = [
         "url": "http://localhost:8000", 
         "description": "Development environment"
     },
-    # {
-    #     "url": "https://dio-blog-fastapi.onrender.com",
-    #     "description": "Production environment",
-    # },
+    {
+        "url": "https://blog-fastapi-gf52.onrender.com",
+        "description": "Production environment",
+    },
 ]
 
 
