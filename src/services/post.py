@@ -1,14 +1,12 @@
-from fastapi import HTTPException, status
 from databases.interfaces import Record
+from exceptions import NotFoundPostError
 from src.database import database
 from src.models.post import posts
 from src.schemas.post import PostIn, PostUpdateIn
 
 class PostService:
-    async def read_all(self, limit: int, skip: int = 0, published: bool | None = None) -> list[Record]:
-        query = posts.select().limit(limit).offset(skip)
-        if published is not None:
-            query = query.where(posts.c.published == published)
+    async def read_all(self, published: bool, limit: int, skip: int = 0) -> list[Record]:
+        query = posts.select().where(posts.c.published == published).limit(limit).offset(skip)
         return await database.fetch_all(query)
     
 
@@ -30,8 +28,8 @@ class PostService:
     async def update(self, id: int, post: PostUpdateIn) -> Record:
         total = await self.count(id)
         if not total:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
-        
+            raise NotFoundPostError
+         
         data = post.model_dump(exclude_unset=True)
         command = posts.update().where(posts.c.id == id).values(**data)
         await database.execute(command)
@@ -50,9 +48,9 @@ class PostService:
         return result['total'] if result else 0
     
 
-    async def __get_by_id(self, id) -> Record:
+    async def __get_by_id(self, id: int) -> Record:
         query = posts.select().where(posts.c.id == id)
         post = await database.fetch_one(query)
         if not post:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+            raise NotFoundPostError
         return post
